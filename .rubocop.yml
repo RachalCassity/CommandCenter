@@ -1,0 +1,73 @@
+require:
+  - rubocop-rspec
+
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  TargetRubyVersion: 2.4
+  TargetRailsVersion: 5.1
+  Exclude:
+    - "tmp/**/*"
+    - "bin/bundle"
+    - "bin/rake"
+    - "bin/rails"
+    - "bin/setup"
+    - "bin/spring"
+    - "bin/update"
+    - "config/boot.rb"
+    - "config/spring.rb"
+
+Rails:
+  Enabled: true
+
+Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/BlockLength:
+  Exclude:
+    - "config/routes.rb"
+    - "spec/**/*"
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/ModuleLength:
+  Exclude:
+    - "spec/**/*"
+
+RSpec/DescribedClass:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 15
+
+RSpec/MultipleExpectations:
+  Max: 10
+
+RSpec/NestedGroups:
+  Max: 6
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/BlockDelimiters:
+  EnforcedStyle: semantic
+  IgnoredMethods:
+    - it
+    - let
+    - let!
+    - subject
+    - before
+    - expect

@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+require "json"
+require "net/http"
+
+if ARGV.count < 1
+  STDERR.puts "ERROR: No message specified"
+  puts ""
+  puts "USAGE:"
+  puts ""
+  puts "  #{$PROGRAM_NAME} message"
+  puts ""
+  exit(1)
+end
+
+message = ARGV.join(" ")
+
+payload = {
+  data: {
+    type: "messages",
+    attributes: {
+      body: message,
+    },
+  },
+}
+
+base_url = "http://localhost:3000"
+uri = URI [base_url, "v1/messages"].join("/")
+
+res = Net::HTTP.start(uri.hostname, uri.port) { |http|
+  req = Net::HTTP::Post.new(uri.path, "Content-Type": "application/vnd.api+json")
+  req.body = JSON.generate(payload)
+  http.request(req)
+}
+
+begin
+  json_response = JSON.parse(res.body)
+
+  if %w[200 201].include?(res.code)
+    reply = json_response.fetch("data").fetch("attributes").fetch("reply")
+    puts reply
+  else
+    STDERR.puts "ERROR: Request response code was #{res.code}"
+    puts res.body
+    exit(1)
+  end
+rescue JSON::ParserError, KeyError
+  STDERR.puts "ERROR: Invalid response data"
+  puts res.body
+  exit(1)
+end

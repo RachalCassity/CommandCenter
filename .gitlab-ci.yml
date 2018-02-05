@@ -1,0 +1,44 @@
+image: "ruby:2.4.3"
+
+services:
+  - postgres:10.1
+
+variables:
+  DATABASE_URL: "postgresql://postgres:postgres@postgres/postgres"
+
+cache:
+  paths:
+    - vendor
+before_script:
+  - ruby -v
+
+rspec:
+  script:
+    - echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' >> /etc/apt/sources.list.d/pgdg.list
+    - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+    - apt-get update -qq
+    - apt-get install -y postgresql-client-10
+    - gem install bundler --no-doc
+    - bundle install --jobs $(nproc) "${FLAGS[@]}"
+    - rails db:migrate
+    - bundle exec rspec
+
+rubocop:
+  script:
+    - gem install rubocop rubocop-rspec
+    - rubocop
+
+brakeman:
+  script:
+    - gem install brakeman
+    - brakeman
+
+bundle_audit:
+  script:
+    - gem install bundler-audit
+    - bundle audit
+
+fasterer:
+  script:
+    - gem install fasterer
+    - fasterer
